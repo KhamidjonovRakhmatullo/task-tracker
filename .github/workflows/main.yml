@@ -16,13 +16,34 @@ jobs:
           password: ${{ secrets.PASS }}
           port: 22
           script: |
-            pm2 stop task-tracker.rakhmatulloh.uz
-            cd task-tracker.rakhmatulloh.uz/
+            # Ensure the project directory exists
+            if [ -d "task-tracker.rakhmatulloh.uz" ]; then
+              cd task-tracker.rakhmatulloh.uz || exit 1
+            else
+              echo "Directory task-tracker.rakhmatulloh.uz does not exist."
+              exit 1
+            fi
+
+            # Stop the existing PM2 process
+            pm2 stop task-tracker.rakhmatulloh.uz || true
+
+            # Pull the latest code
             git pull origin main
+
+            # Clean and set up build directory
             rm -rf ./build
+            mkdir -p ./build
+
+            # Remove old build directory on server and create a new one
             rm -rf /var/www/task-tracker.rakhmatulloh.uz
-            mkdir /var/www/task-tracker.rakhmatulloh.uz
+            mkdir -p /var/www/task-tracker.rakhmatulloh.uz
+
+            # Install dependencies and build the project
             npm install
             npm run build
+
+            # Copy the new build to the server directory
             cp -rf ./build/* /var/www/task-tracker.rakhmatulloh.uz
-            pm2 restart task-tracker.rakhmatulloh.uz
+
+            # Restart the PM2 process
+            pm2 restart task-tracker.rakhmatulloh.uz || pm2 start /var/www/task-tracker.rakhmatulloh.uz --name task-tracker.rakhmatulloh.uz
