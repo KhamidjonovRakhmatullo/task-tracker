@@ -16,13 +16,13 @@ jobs:
           password: ${{ secrets.PASS }}
           port: 22
           script: |
-            pm2 stop rakhmatulloh.uz
-            cd rakhmatulloh.uz/
+            pm2 stop task-tracker.rakhmatulloh.uz
+            cd task-tracker.rakhmatulloh.uz/
             git pull origin main
             rm -rf ./build
-            rm -rf /var/www/rakhmatulloh.uz
-            mkdir /var/www/rakhmatulloh.uz
+            rm -rf /var/www/task-tracker.rakhmatulloh.uz
+            mkdir /var/www/task-tracker.rakhmatulloh.uz
             npm install
             npm run build
-            cp -rf ./build/* /var/www/rakhmatulloh.uz
-            pm2 restart rakhmatulloh.uz
+            cp -rf ./build/* /var/www/task-tracker.rakhmatulloh.uz
+            pm2 restart task-tracker.rakhmatulloh.uz
