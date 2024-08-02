@@ -16,7 +16,6 @@ jobs:
           password: ${{ secrets.PASS }}
           port: 22
           script: |
-            pm2 stop task-tracker.rakhmatulloh.uz
             cd task-tracker
             git pull origin main
             rm -rf ./build
